@@ -1,0 +1,80 @@
+columns_to_keep:
+  - CS_SEXO
+  - NU_IDADE_N
+  - CS_GESTANT
+  - NOSOCOMIAL
+  - AVE_SUINO
+  - FEBRE
+  - TOSSE
+  - GARGANTA
+  - DISPNEIA
+  - DESC_RESP
+  - SATURACAO
+  - OUTRO_SIN
+  - FATOR_RISC
+  - VACINA
+  - ANTIVIRAL
+  - HOSPITAL
+  - UTI
+  - SUPORT_VEN
+  - FADIGA
+  - VACINA_COV
+  - DOSE_1_COV
+  - DOSE_2_COV
+  - FNT_IN_COV
+
+columns_to_drop:
+  - DOSE_REF # quasi zero variance
+  - DELTA_UTI # zero variance
+  - PERD_PALA
+  - PERD_OLFT
+  - DIARREIA
+  - VOMITO
+  - DOR_ABD
+  - TOMO_RES
+  - RAIOX_RES
+  - OUT_MORBI
+  - CARDIOPATI
+  - DIABETES
+  - OBESIDADE
+  - NEUROLOGIC
+  - PNEUMOPATI
+  - ASMA
+  - RENAL
+  - IMUNODEPRE
+  - HEMATOLOGI
+  - PUERPERA
+  - SIND_DOWN
+  - TP_ANTIVIR
+  - HEPATICA
+  - MAE_VAC
+  - OUTRO_DES
+  - MORB_DESC
+  - RAIOX_OUT
+  - TOMO_OUT
+  - OBES_IMC
+  - PAC_COCBO
+  - AMOSTRA
+  - CO_REGIONA
+  - CS_ZONA
+  - HISTO_VGM
+  - SG_UF
+  - SEM_NOT
+  - OUT_AMOST
+  - SURTO_SG
+  - CO_MUN_NOT
+  - SEM_PRI
+  - ID_MUNICIP
+  - PAC_DSCBO
+  - OUT_ANIM
+  - ID_REGIONA
+  - COD_IDADE
+  - CS_ESCOL_N
+  - TP_IDADE
+  - M_AMAMENTA
+  - TP_AMOSTRA
+  - CS_RACA
+  - SG_UF_NOT
+
+target_column:
+  - CLASSI_FIN
