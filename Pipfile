@@ -15,6 +15,11 @@ catboost = "==1.1.1"
 missingno = "==0.5.1"
 lightgbm = "==3.3.5"
 xgboost = "==1.7.3"
+hiplot = "*"
+polars = "==0.16.4"
+pyarrow = "==11.0.0"
+lazypredict = "*"
+imbalanced-learn = "==0.10.1"
 
 [dev-packages]
 black = "*"

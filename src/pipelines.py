@@ -6,11 +6,12 @@ import pandas as pd
 import yaml
 from catboost import CatBoostClassifier
 from lightgbm import LGBMClassifier
+from sklearn.compose import make_column_transformer
 from sklearn.ensemble import HistGradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from xgboost import XGBClassifier
 
 
@@ -54,7 +55,6 @@ class Pipeline:
             random_state=42,
             stratify=self.target,
         )
-        print(x_train.columns)
         return x_train, x_test, y_train, y_test
 
     def impute_missing_values(self, x_train, x_test):
@@ -114,12 +114,44 @@ class Pipeline:
         x_test["CS_SEXO"] = x_test["CS_SEXO"].map({"M": 0, "F": 1, "I": 2})
         return x_train, x_test
 
+    def ohe_categorical_columns(self, x_train, x_test):
+        columns_to_ohe = self.params["columns_to_keep"]
+        columns_to_ohe.remove("NU_IDADE_N")
+        # one hot encoding
+        ohe = make_column_transformer(
+            (
+                OneHotEncoder(handle_unknown="ignore"),
+                columns_to_ohe,
+            ),
+            remainder="passthrough",
+        )
+        x_train = ohe.fit_transform(x_train)
+        x_test = ohe.transform(x_test)
+        self.x_test_kaggle = ohe.transform(self.x_test_kaggle)
+
+        return x_train, x_test
+
     def train_rf(self, x_train, y_train):
         rf = RandomForestClassifier(
-            n_estimators=1000, random_state=42, class_weight="balanced", n_jobs=10
+            n_estimators=1000,
+            random_state=42,
+            n_jobs=10,
+            class_weight={1: 2, 2: 2, 3: 2, 4: 1, 5: 1},
         )
         rf.fit(x_train, y_train.values.ravel())
         return rf
+
+    def train_histogram_gradient_boosting(self, x_train, y_train):
+        hgb = HistGradientBoostingClassifier(
+            max_iter=2000,
+            random_state=42,
+            class_weight={0: 2, 1: 2, 2: 2, 3: 1, 4: 1},
+            max_depth=75,
+            l2_regularization=1.5,
+            scoring="f1_macro",
+        )
+        hgb.fit(x_train, y_train.values.ravel())
+        return hgb
 
     def train_lightgbm(self, x_train, y_train):
         lgbm = LGBMClassifier(

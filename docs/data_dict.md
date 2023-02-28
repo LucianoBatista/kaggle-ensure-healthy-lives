@@ -27,3 +27,4 @@
 Premissas:
 
 - Vamos retirar quem tiver de até > 40% de dados missings
+- Vacina Cov é uma coluna core, que origina outras 2. Essa possui missing, enquanto as descendentes n, parece algum erro de importação.
