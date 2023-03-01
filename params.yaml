@@ -153,10 +153,101 @@ categorical_features:
 categorical_features_order_matters:
 
 numerical_features:
-  # - OBES_IMC
+  - OBES_IMC
   - SEM_NOT
   - SEM_PRI
   - NU_IDADE_N
 
 target_column:
   - CLASSI_FIN
+
+# map_variables:
+#   - CO_MUN_NOT: municipio_code_ibge
+#   - CO_REGIONA: regionais_saude_code_ibge
+#   - SG_UF_NOT: 
+#   # - ID_REGIONA
+#   # - ID_MUNICIP
+#   - CS_SEXO
+#   - COD_IDADE
+#   - CS_GESTANT
+#   - CS_RACA
+#   - CS_ESCOL_N
+#   - SG_UF
+#   - CS_ZONA
+#   - SURTO_SG
+#   - NOSOCOMIAL
+#   - AVE_SUINO
+#   - FEBRE
+#   - TOSSE
+#   - GARGANTA
+#   - DISPNEIA
+#   - DESC_RESP
+#   - SATURACAO
+#   - DIARREIA
+#   - VOMITO
+#   - OUTRO_SIN
+#   # - OUTRO_DES
+#   - PUERPERA
+#   - FATOR_RISC
+#   - CARDIOPATI
+#   - HEMATOLOGI
+#   - SIND_DOWN
+#   - HEPATICA
+#   - ASMA
+#   - DIABETES
+#   - NEUROLOGIC
+#   - PNEUMOPATI
+#   - IMUNODEPRE
+#   - RENAL
+#   - OBESIDADE
+#   - OUT_MORBI
+#   # - MORB_DESC
+#   - VACINA
+#   # - MAE_VAC
+#   # - M_AMAMENTA
+#   - ANTIVIRAL
+#   # - TP_ANTIVIR
+#   - HOSPITAL
+#   - UTI
+#   - SUPORT_VEN
+#   - RAIOX_RES
+#   - RAIOX_OUT
+#   - AMOSTRA
+#   - TP_AMOSTRA
+#   # - OUT_AMOST
+#   - HISTO_VGM
+#   # - PAC_COCBO
+#   # - PAC_DSCBO
+#   # - OUT_ANIM
+#   - DOR_ABD
+#   - FADIGA
+#   - PERD_OLFT
+#   - PERD_PALA
+#   - TOMO_RES
+#   # - TOMO_OUT
+#   - VACINA_COV
+#   - DOSE_1_COV
+#   - DOSE_2_COV
+#   - FNT_IN_COV
+#   # - TP_IDADE
+#   # - OBES_IMC
+#   - SEM_NOT
+#   - SEM_PRI
+#   - NU_IDADE_N
+#   - CLASSI_FIN
+
+
+# dados_paciente:
+
+
+# dados_residencia:
+
+
+# dados_clinicos:
+
+
+# dados_atendimentos:
+
+# dados_laboratoriais:
+
+

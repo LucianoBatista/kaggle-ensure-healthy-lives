@@ -6,6 +6,7 @@ import yaml
 from feature_engine.encoding import RareLabelEncoder
 from feature_engine.outliers import Winsorizer
 from imblearn.over_sampling import ADASYN, SMOTE
+from imblearn.pipeline import Pipeline
 
 # from imblearn.pipeline import Pipeline
 from lightgbm import LGBMClassifier
@@ -15,8 +16,9 @@ from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
 from sklearn.model_selection import GridSearchCV, train_test_split
-from sklearn.pipeline import Pipeline, make_pipeline
+from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import OrdinalEncoder, StandardScaler
+from xgboost import XGBClassifier
 
 
 @dataclass
@@ -188,12 +190,20 @@ class Pipes:
             C=1.5,
             penalty="l2",
         )
+        clf_4 = XGBClassifier(
+            random_state=42,
+            # class_weight={0: 2, 1: 2, 2: 2, 3: 1, 4: 1},
+            max_depth=100,
+            n_estimators=2000,
+            reg_alpha=1.5,
+            reg_lambda=1.5,
+        )
 
         clf = VotingClassifier(
             estimators=[
                 ("HistGradientBoostingClassifier", clf_1),
                 ("LGBMClassifier", clf_2),
-                # ("LogisticRegression", clf_3),
+                # ("LogisticRegression", clf_4),
             ],
             voting="hard",
         )
@@ -207,13 +217,13 @@ class Pipes:
         pipe = Pipeline(
             steps=[
                 ("preprocessor", preprocessor),
-                # (
-                #     "SMOTE",
-                #     ADASYN(
-                #         random_state=42,
-                #         sampling_strategy="not majority",
-                #     ),
-                # ),
+                (
+                    "SMOTE",
+                    SMOTE(
+                        random_state=42,
+                        sampling_strategy="not majority",
+                    ),
+                ),
                 ("classifier", clf),
             ]
         )
@@ -233,7 +243,7 @@ class Pipes:
             "DELTA_UTI",
             "DOSE_REF",
             "OUT_ANIM",
-            "OBES_IMC",
+            # "OBES_IMC",
             "M_AMAMENTA",
             "MAE_VAC",
             "TP_ANTIVIR",
@@ -312,7 +322,7 @@ class Pipes:
             "DELTA_UTI",
             "DOSE_REF",
             "OUT_ANIM",
-            "OBES_IMC",
+            # "OBES_IMC",
             "M_AMAMENTA",
             "MAE_VAC",
             "TP_ANTIVIR",
@@ -325,5 +335,4 @@ class Pipes:
 
         submission = pd.DataFrame({"ID": x_test_id, "CLASSI_FIN": y_pred})
         submission.to_csv(file_name, index=False)
-        print("Done!")
         print("Done!")
