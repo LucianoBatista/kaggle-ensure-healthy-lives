@@ -205,7 +205,7 @@ Paciente apresenta algum fator de risco?
 - 2: Não
 - 9: Ignorado
 
-## CARDIOPATI (is_cardio_down)
+## CARDIOPATI (is_cardio_down_fr)
 
 Paciente possui doença cardiovascular crônica?
 
@@ -213,11 +213,11 @@ Paciente possui doença cardiovascular crônica?
 - 2: Não
 - 9: Ignorado
 
-## HEMATOLOGI (is_hemato_down)
+## HEMATOLOGI (is_hemato_down_fr)
 
 Paciente possui doença Hematológica crônica?
 
-## SIND_DOWN (is_sindrome_down)
+## SIND_DOWN (is_sindrome_down_fr)
 
 Paciente possui Síndrome de Down?
 
@@ -225,7 +225,7 @@ Paciente possui Síndrome de Down?
 - 2: Não
 - 9: Ignorado
 
-## HEPATICA (is_hepatica_down)
+## HEPATICA (is_hepatica_down_fr)
 
 Paciente possui alguma doença hepática crônica?
 
@@ -233,7 +233,7 @@ Paciente possui alguma doença hepática crônica?
 - 2: Não
 - 9: Ignorado
 
-## ASMA (is_asma)
+## ASMA (is_asma_fr)
 
 Possui asma?
 
@@ -241,7 +241,7 @@ Possui asma?
 - 2: Não
 - 9: Ignorado
 
-## DIABETES (is_diabetes)
+## DIABETES (is_diabetes_fr)
 
 Possui diabetes?
 
@@ -249,7 +249,7 @@ Possui diabetes?
 - 2: Não
 - 9: Ignorado
 
-## NEUROLOGIC (is_neuro_down)
+## NEUROLOGIC (is_neuro_down_fr)
 
 Possui doença neurológica?
 
@@ -257,80 +257,293 @@ Possui doença neurológica?
 - 2: Não
 - 9: Ignorado
 
-## PNEUMOPATI
+## PNEUMOPATI (is_pneumopatia_down_fr)
 
-## IMUNODEPRE
+Possui pneumopatia?
 
-## RENAL
+- 1: Sim
+- 2: Não
+- 9: Ignorado
 
-## OBESIDADE
+## IMUNODEPRE (is_imunodef_down_fr)
 
-## OUT_MORBI
+Possui imunodeficiência ou imunodepressão?
 
-## MORB_DESC
+- 1: Sim
+- 2: Não
+- 9: Ignorado
 
-## VACINA
+## RENAL (is_renal_down_fr)
 
-## MAE_VAC
+Possui doença crônica renal?
 
-## M_AMAMENTA
+- 1: Sim
+- 2: Não
+- 9: Ignorado
 
-## ANTIVIRAL
+## OBESIDADE (is_obesidade_down_fr)
 
-## TP_ANTIVIR
+Possui obesidade?
 
-## HOSPITAL
+- 1: Sim
+- 2: Não
+- 9: Ignorado
 
-## UTI
+## OBES_IMC (obesidade_imc)
 
-## SUPORT_VEN
+Habilitado apenas se `is_obesidade_down_fr` == True
 
-## RAIOX_RES
+- 1: Sim
+- 2: Não
+- 9: Ignorado
 
-## RAIOX_OUT
+## OUT_MORBI (is_outros_fr)
 
-## AMOSTRA
+Possui outros fatores de risco?
 
-## TP_AMOSTRA
+- 1: Sim
+- 2: Não
+- 9: Ignorado
 
-## OUT_AMOST
+## MORB_DESC (outros_fr_desc)
 
-## HISTO_VGM
+Descrição dos outros fatores de risco caso o paciente tenha outros fatores de risco.
 
-## PAC_COCBO
+## VACINA (is_vacina)
 
-## PAC_DSCBO
+Recebeu vacina contra Gripe na última campanha?
 
-## OUT_ANIM
+- 1: Sim
+- 2: Não
+- 9: Ignorado
 
-## DOR_ABD
+Tomar a vacina de Gripe da última campanha fornece imunidade contra o SRAG?
 
-## FADIGA
+## MAE_VAC (is_mae_vacina)
 
-## PERD_OLFT
+A mãe recebeu vacina? De que?
 
-## PERD_PALA
+Habilitado apenas se a _idade for menor que 6 meses._
 
-## TOMO_RES
+- 1: Sim
+- 2: Não
+- 9: Ignorado
 
-## TOMO_OUT
+## M_AMAMENTA (is_mae_amamenta)
 
-## VACINA_COV
+A mãe amamenta a criança?
 
-## DOSE_1_COV
+Habilitado apenas se a _idade for menor que 6 meses._
 
-## DOSE_2_COV
+- 1: Sim
+- 2: Não
+- 9: Ignorado
 
-## FNT_IN_COV
+## ANTIVIRAL (is_antiviral)
 
-## TP_IDADE
+Usou antiviral para gripe?
 
-## OBES_IMC
+- 1: Sim
+- 2: Não
+- 9: Ignorado
 
-## SEM_NOT
+## TP_ANTIVIR (qual_antiviral)
 
-## SEM_PRI
+Qual o outro antiviral?
 
-## NU_IDADE_N
+- 1: Oseltamivir
+- 2: Zanamivir
+- 3: Outro
 
-## CLASSI_FIN
+**Nem OUT_ANTIVIR nem DT_ANTIVIR tem nos dados!, seriam relacionados a essa variável.**
+
+## HOSPITAL (is_internado)
+
+Foi internado?
+
+- 1: Sim
+- 2: Não
+- 9: Ignorado
+
+## UTI (is_internado_uti)
+
+Internado na UTI?
+
+- 1: Sim
+- 2: Não
+- 9: Ignorado
+
+Acredito que se o paciente não foi internado, ele tbm não foi internado na UTI. Vale a verificação.
+
+## SUPORT_VEN (is_suporte_ventilador)
+
+Usou suporte ventilatório?
+
+- 1: Sim, invasivo
+- 2: Sim, não invasivo
+- 3: Não
+- 9: Ignorado
+
+## RAIOX_RES (x_ray_torax)
+
+Resultado do Raio X do Toráx
+
+- 1: Normal
+- 2: Infiltrado intersticial
+- 3: Consolidação
+- 4: Misto
+- 5: Outro
+- 6: Não realizado
+- 9: Ignorado
+
+## RAIOX_OUT (x_ray_outro_desc)
+
+Informar o resultado do RX de tórax caso Outros tenha sido selecionado.
+
+Habilitado apenas se `x_ray_torax` set to 5.
+
+## AMOSTRA (is_amostragem)
+
+Coletou amostra para teste diagnóstico?
+
+- 1: Sim
+- 2: Não
+- 9: Ignorado
+
+## TP_AMOSTRA (tipo_amostragem)
+
+Caso tenha sido coletado amostra (`is_amostragem` == 1), qual o tipo?
+
+- 1: Secreção de Nasoorofaringe
+- 2: Levado Broco-alveolar
+- 3: Tecido post-mortem
+- 4: Outro, qual?
+- 5: LCR
+- 9: Ignorado
+
+## OUT_AMOST (amostragem_outros)
+
+Se foi feito um outro tipo de amostragem (`tipo_amostragem` == 4), descreva?
+
+## HISTO_VGM (não consta no documento)
+
+**Analisar e verificar os dados que temos aqui**
+
+## PAC_COCBO e PAC_DSCBO são iguais (patient_occupation)
+
+Ocupação profissional do paciente. Código tabelado
+
+## OUT_ANIM (patient_work_animals)
+
+Habilitado coso 3 no AVE_SUINO. \*\*Buscar por caso 3 no ave_suino.
+
+## DOR_ABD (is_dor_abdominal)
+
+Apresentou dor abdominal?
+
+- 1: Sim
+- 2: Não
+- 9: Ignorado
+
+## FADIGA (is_fadiga)
+
+Apresentou fadiga?
+
+- 1: Sim
+- 2: Não
+- 9: Ignorado
+
+## PERD_OLFT (is_olfato_loose)
+
+Apresentou perda de olfato?
+
+- 1: Sim
+- 2: Não
+- 9: Ignorado
+
+## PERD_PALA (is_paladar_loose)
+
+Apresentou perda de paladar?
+
+- 1: Sim
+- 2: Não
+- 9: Ignorado
+
+## TOMO_RES (results_tomografia)
+
+Resultados da Tomografia
+
+- 1: Tipico Covid-19
+- 2: Indeterminado covid-19
+- 3: Atipico covid-19
+- 4: Negativo para Pneumonia
+- 5: Outro
+- 6: Não realizado
+- 9: Ignorado
+
+## TOMO_OUT (results_tomografia_outro)
+
+No caso de outro, descreva o resultado
+
+## VACINA_COV (is_vacina_covid)
+
+Recebeu vacina covid-19?
+
+- 1: Sim
+- 2: Não
+- 9: Ignorado
+
+## DOSE_1_COV (is_vacina_covid_dose_1)
+
+Tomou a primeira dose?
+
+- 1: Sim
+- 2: Não
+- 9: Ignorado
+
+## DOSE_2_COV (is_vacina_covid_dose_2)
+
+Tomou a segunda dose?
+
+- 1: Sim
+- 2: Não
+- 9: Ignorado
+
+## FNT_IN_COV (data_integration)
+
+Manual ou Integração. Forma de como os dados foram coletados.
+
+- 1: Manual
+- 2: Integração
+
+## TP_IDADE (age_type)
+
+Tipo idade. Contabilizada da data de nascimento até a data dos sintomas.
+
+- 1: Dia
+- 2: Mês
+- 3: Ano
+
+## SEM_NOT (semana_epid_notification)
+
+Semana Epidemiológica do preenchimento da ficha de notificação. Calculado a partir da data dos Primeiros Sintomas.
+
+## SEM_PRI (semana_epid_sintomas)
+
+Semana Epidemiológica dos primeiros sintomas. Calculado a partir da data dos Primeiros Sintomas.
+
+## NU_IDADE_N (patient_age)
+
+Idade informada pelo paciente. Na falta dessa informação o sistema adiciona uma data aparente.
+
+Idades devem ser <= 150.
+
+## CLASSI_FIN (target)
+
+Nosso target!
+
+- 1: SRAG por influenza
+- 2: por outro vírus
+- 3: por outro agente
+- 4: por outro n especificado
+- 5: por convid-19

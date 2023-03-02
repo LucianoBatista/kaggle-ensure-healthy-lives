@@ -2,12 +2,14 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pandas as pd
+import polars as pl
 import yaml
+from catboost import CatBoostClassifier
 from feature_engine.encoding import RareLabelEncoder
 from feature_engine.outliers import Winsorizer
 from imblearn.over_sampling import ADASYN, SMOTE
-from imblearn.pipeline import Pipeline
 
+# from imblearn.pipeline import Pipeline
 # from imblearn.pipeline import Pipeline
 from lightgbm import LGBMClassifier
 from sklearn.compose import ColumnTransformer
@@ -16,8 +18,9 @@ from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
 from sklearn.model_selection import GridSearchCV, train_test_split
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import OrdinalEncoder, StandardScaler
+from sklearn.pipeline import Pipeline, make_pipeline
+from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler
+from sklearn.tree import ExtraTreeClassifier
 from xgboost import XGBClassifier
 
 
@@ -50,24 +53,100 @@ class Pipes:
         test_data = pd.read_csv(self.test_data_path, low_memory=False)
         return train_data, test_data
 
+    def _handle_obes_imc(self, data: pd.DataFrame):
+        # remove comman from OBES_IMC column
+        data_pl = pl.from_pandas(data)
+        data = data_pl.with_columns(
+            pl.col("OBES_IMC").str.replace(",", ".").cast(pl.Float64).alias("OBES_IMC")
+        ).with_columns(
+            [
+                pl.when((pl.col("OBESIDADE") == 1) & (pl.col("OBES_IMC") < 30))
+                .then(30)
+                .when((pl.col("OBESIDADE") == 1) & (pl.col("OBES_IMC") >= 100))
+                .then(30)
+                .when(pl.col("OBES_IMC").is_null())
+                .then(24)
+                .otherwise(pl.col("OBES_IMC"))
+                .alias("OBES_IMC")
+            ]
+        )
+        data = data.to_pandas()
+
+        return data
+
+    def _handle_idade(self, data: pd.DataFrame):
+        data_pl = pl.from_pandas(data)
+        data = data_pl.with_columns(
+            [
+                pl.when(pl.col("TP_IDADE").is_in([1, 2]))
+                .then(0)
+                .when(pl.col("TP_IDADE") == 3)
+                .then(pl.col("NU_IDADE_N"))
+                .otherwise(pl.col("NU_IDADE_N"))
+                .alias("NU_IDADE_N")
+            ]
+        )
+        data = data.to_pandas()
+
+        return data
+
+    def _handle_antiviral(self, data: pd.DataFrame):
+        data_pl = pl.from_pandas(data)
+        data = data_pl.with_columns(
+            [
+                pl.when(pl.col("ANTIVIRAL") == 1)
+                .then(pl.col("TP_ANTIVIR").fill_null(1))
+                .when(pl.col("TP_ANTIVIR").is_null())
+                .then(0)
+                .otherwise(pl.col("TP_ANTIVIR"))
+                .alias("TP_ANTIVIR")
+            ]
+        )
+        data = data.to_pandas()
+
+        return data
+
+    def _handle_tomo_res(self, data: pd.DataFrame):
+        data_pl = pl.from_pandas(data)
+        data = data_pl.with_columns([pl.col("TOMO_RES").fill_null(6).alias("TOMO_RES")])
+        data = data.to_pandas()
+
+        return data
+
     def adjust_OBES_IMC(self):
         # remove comman from OBES_IMC column
-        self.train_data["OBES_IMC"] = (
-            self.train_data["OBES_IMC"].str.replace(",", ".").astype(float)
-        )
-        self.test_data["OBES_IMC"] = (
-            self.test_data["OBES_IMC"].str.replace(",", ".").astype(float)
-        )
+        self.train_data = self._handle_obes_imc(self.train_data)
+        self.test_data = self._handle_obes_imc(self.test_data)
+
+    def adjust_idade(self):
+        self.train_data = self._handle_idade(self.train_data)
+        self.test_data = self._handle_idade(self.test_data)
+
+    def adjust_antiviral(self):
+        self.train_data = self._handle_antiviral(self.train_data)
+        self.test_data = self._handle_antiviral(self.test_data)
+
+    def adjust_tomo_res(self):
+        self.train_data = self._handle_tomo_res(self.train_data)
+        self.test_data = self._handle_tomo_res(self.test_data)
 
     def _create_preprocessor_best_score(self):
         # categorical preprocessor
         categorical_preprocessor = Pipeline(
             steps=[
                 ("imputer", SimpleImputer(strategy="most_frequent")),
+                # (
+                #     "encoder",
+                #     OrdinalEncoder(
+                #         handle_unknown="use_encoded_value", unknown_value=-1
+                #     ),
+                # ),
                 (
-                    "encoder",
-                    OrdinalEncoder(
-                        handle_unknown="use_encoded_value", unknown_value=-1
+                    "one_hot_encoder",
+                    OneHotEncoder(
+                        handle_unknown="ignore",
+                        sparse=False,
+                        drop="if_binary",
                     ),
                 ),
             ]
@@ -183,14 +262,23 @@ class Pipes:
             reg_alpha=1.5,
             reg_lambda=1.5,
         )
-        clf_3 = LogisticRegression(
+        clf_3 = ExtraTreeClassifier(
+            random_state=42,
+            class_weight={0: 2, 1: 2, 2: 2, 3: 1, 4: 1},
+            max_depth=100,
+            max_features=0.5,
+            min_samples_leaf=1,
+            min_samples_split=2,
+            splitter="random",
+        )
+        clf_4 = LogisticRegression(
             random_state=42,
             class_weight={0: 2, 1: 2, 2: 2, 3: 1, 4: 1},
             max_iter=2000,
             C=1.5,
             penalty="l2",
         )
-        clf_4 = XGBClassifier(
+        clf_5 = XGBClassifier(
             random_state=42,
             # class_weight={0: 2, 1: 2, 2: 2, 3: 1, 4: 1},
             max_depth=100,
@@ -199,11 +287,22 @@ class Pipes:
             reg_lambda=1.5,
         )
 
+        clf_6 = CatBoostClassifier(
+            random_state=42,
+            # iterations=2000,
+            class_weights={0: 2, 1: 2, 2: 2, 3: 1, 4: 1},
+            # max_depth=100,
+            learning_rate=0.01,
+            n_estimators=10000,
+            loss_function="MultiClass",
+            reg_lambda=1.5,
+        )
+
         clf = VotingClassifier(
             estimators=[
                 ("HistGradientBoostingClassifier", clf_1),
                 ("LGBMClassifier", clf_2),
-                # ("LogisticRegression", clf_4),
+                # ("ExtraTree", clf_6),
             ],
             voting="hard",
         )
@@ -217,13 +316,13 @@ class Pipes:
         pipe = Pipeline(
             steps=[
                 ("preprocessor", preprocessor),
-                (
-                    "SMOTE",
-                    SMOTE(
-                        random_state=42,
-                        sampling_strategy="not majority",
-                    ),
-                ),
+                # (
+                #     "SMOTE",
+                #     ADASYN(
+                #         random_state=42,
+                #         sampling_strategy="not majority",
+                #     ),
+                # ),
                 ("classifier", clf),
             ]
         )
@@ -239,15 +338,18 @@ class Pipes:
             "PAC_COCBO",
             "PAC_DSCBO",
             "TOMO_OUT",
-            "TP_IDADE",
+            # "TP_IDADE",
             "DELTA_UTI",
             "DOSE_REF",
             "OUT_ANIM",
             # "OBES_IMC",
             "M_AMAMENTA",
             "MAE_VAC",
-            "TP_ANTIVIR",
+            # "TP_ANTIVIR",
             # "CO_MUN_NOT",
+            "SURTO_SG",
+            "RAIOX_OUT",
+            "FNT_IN_COV",
             "ID",
             "CLASSI_FIN",
         ]
@@ -318,15 +420,18 @@ class Pipes:
             "PAC_COCBO",
             "PAC_DSCBO",
             "TOMO_OUT",
-            "TP_IDADE",
+            # "TP_IDADE",
             "DELTA_UTI",
             "DOSE_REF",
             "OUT_ANIM",
             # "OBES_IMC",
             "M_AMAMENTA",
             "MAE_VAC",
-            "TP_ANTIVIR",
+            # "TP_ANTIVIR",
             # "CO_MUN_NOT",
+            "SURTO_SG",
+            "RAIOX_OUT",
+            "FNT_IN_COV",
             "ID",
         ]
         x_test_id = self.test_data["ID"]
@@ -335,4 +440,5 @@ class Pipes:
 
         submission = pd.DataFrame({"ID": x_test_id, "CLASSI_FIN": y_pred})
         submission.to_csv(file_name, index=False)
+        print("Done!")
         print("Done!")

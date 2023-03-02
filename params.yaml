@@ -93,7 +93,7 @@ categorical_features:
   - CS_ESCOL_N
   - SG_UF
   - CS_ZONA
-  - SURTO_SG
+  # - SURTO_SG
   - NOSOCOMIAL
   - AVE_SUINO
   - FEBRE
@@ -125,12 +125,12 @@ categorical_features:
   # - MAE_VAC
   # - M_AMAMENTA
   - ANTIVIRAL
-  # - TP_ANTIVIR
+  - TP_ANTIVIR
   - HOSPITAL
   - UTI
   - SUPORT_VEN
   - RAIOX_RES
-  - RAIOX_OUT
+  # - RAIOX_OUT
   - AMOSTRA
   - TP_AMOSTRA
   # - OUT_AMOST
@@ -147,8 +147,8 @@ categorical_features:
   - VACINA_COV
   - DOSE_1_COV
   - DOSE_2_COV
-  - FNT_IN_COV
-  # - TP_IDADE
+  # - FNT_IN_COV
+  - TP_IDADE
 
 categorical_features_order_matters:
 
