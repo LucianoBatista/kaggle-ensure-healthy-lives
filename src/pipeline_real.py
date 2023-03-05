@@ -7,13 +7,19 @@ import yaml
 from catboost import CatBoostClassifier
 from feature_engine.encoding import RareLabelEncoder
 from feature_engine.outliers import Winsorizer
-from imblearn.over_sampling import ADASYN, SMOTE
+from imblearn.combine import SMOTEENN, SMOTETomek
+from imblearn.over_sampling import ADASYN, SMOTE, RandomOverSampler
+from imblearn.pipeline import Pipeline as imb_pipeline
+from imblearn.under_sampling import RandomUnderSampler
 
-# from imblearn.pipeline import Pipeline
 # from imblearn.pipeline import Pipeline
 from lightgbm import LGBMClassifier
 from sklearn.compose import ColumnTransformer
-from sklearn.ensemble import HistGradientBoostingClassifier, VotingClassifier
+from sklearn.ensemble import (
+    HistGradientBoostingClassifier,
+    RandomForestClassifier,
+    VotingClassifier,
+)
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
@@ -21,6 +27,7 @@ from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.pipeline import Pipeline, make_pipeline
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler
 from sklearn.tree import ExtraTreeClassifier
+from unidecode import unidecode
 from xgboost import XGBClassifier
 
 
@@ -113,6 +120,427 @@ class Pipes:
 
         return data
 
+    def _create_a_risk_factor_variable(self, data: pd.DataFrame):
+        data_pl = pl.from_pandas(data)
+        data_pl = (
+            data_pl.with_columns(
+                [
+                    pl.when((pl.col("CARDIOPATI") == 2))
+                    .then(0)
+                    .otherwise(pl.col("CARDIOPATI"))
+                    .alias("CARDIOPATI")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("HEMATOLOGI") == 2))
+                    .then(0)
+                    .otherwise(pl.col("HEMATOLOGI"))
+                    .alias("HEMATOLOGI")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("SIND_DOWN") == 2))
+                    .then(0)
+                    .otherwise(pl.col("SIND_DOWN"))
+                    .alias("SIND_DOWN")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("HEPATICA") == 2))
+                    .then(0)
+                    .otherwise(pl.col("HEPATICA"))
+                    .alias("HEPATICA")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("ASMA") == 2))
+                    .then(0)
+                    .otherwise(pl.col("ASMA"))
+                    .alias("ASMA")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("DIABETES") == 2))
+                    .then(0)
+                    .otherwise(pl.col("DIABETES"))
+                    .alias("DIABETES")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("NEUROLOGIC") == 2))
+                    .then(0)
+                    .otherwise(pl.col("NEUROLOGIC"))
+                    .alias("NEUROLOGIC")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("PNEUMOPATI") == 2))
+                    .then(0)
+                    .otherwise(pl.col("PNEUMOPATI"))
+                    .alias("PNEUMOPATI")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("IMUNODEPRE") == 2))
+                    .then(0)
+                    .otherwise(pl.col("IMUNODEPRE"))
+                    .alias("IMUNODEPRE")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("RENAL") == 2))
+                    .then(0)
+                    .otherwise(pl.col("RENAL"))
+                    .alias("RENAL")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("OBESIDADE") == 2))
+                    .then(0)
+                    .otherwise(pl.col("OBESIDADE"))
+                    .alias("OBESIDADE")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.sum(
+                        [
+                            "CARDIOPATI",
+                            "HEMATOLOGI",
+                            "SIND_DOWN",
+                            "HEPATICA",
+                            "ASMA",
+                            "DIABETES",
+                            "NEUROLOGIC",
+                            "PNEUMOPATI",
+                            "IMUNODEPRE",
+                            "RENAL",
+                            "OBESIDADE",
+                        ]
+                    ).alias("RISCK_FACTORS")
+                ]
+            )
+        )
+        data["RISCK_FACTORS"] = data_pl["RISCK_FACTORS"].to_numpy()
+        data = data.drop(
+            [
+                "CARDIOPATI",
+                "HEMATOLOGI",
+                "SIND_DOWN",
+                "HEPATICA",
+                "ASMA",
+                "DIABETES",
+                "NEUROLOGIC",
+                "PNEUMOPATI",
+                "IMUNODEPRE",
+                "RENAL",
+                "OBESIDADE",
+            ],
+            axis=1,
+        )
+
+        return data
+
+    def _create_sintoma_factor_variable(self, data: pd.DataFrame):
+        data_pl = pl.from_pandas(data)
+        data_pl = (
+            data_pl.with_columns(
+                [
+                    pl.when((pl.col("NOSOCOMIAL") == 2))
+                    .then(0)
+                    .otherwise(pl.col("NOSOCOMIAL"))
+                    .alias("NOSOCOMIAL")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("FEBRE") == 2))
+                    .then(0)
+                    .otherwise(pl.col("FEBRE"))
+                    .alias("FEBRE")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("TOSSE") == 2))
+                    .then(0)
+                    .otherwise(pl.col("TOSSE"))
+                    .alias("TOSSE")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("GARGANTA") == 2))
+                    .then(0)
+                    .otherwise(pl.col("GARGANTA"))
+                    .alias("GARGANTA")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("DISPNEIA") == 2))
+                    .then(0)
+                    .otherwise(pl.col("DISPNEIA"))
+                    .alias("DISPNEIA")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("DESC_RESP") == 2))
+                    .then(0)
+                    .otherwise(pl.col("DESC_RESP"))
+                    .alias("DESC_RESP")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("SATURACAO") == 2))
+                    .then(0)
+                    .otherwise(pl.col("SATURACAO"))
+                    .alias("SATURACAO")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("DIARREIA") == 2))
+                    .then(0)
+                    .otherwise(pl.col("DIARREIA"))
+                    .alias("DIARREIA")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("VOMITO") == 2))
+                    .then(0)
+                    .otherwise(pl.col("VOMITO"))
+                    .alias("VOMITO")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("OUTRO_SIN") == 2))
+                    .then(0)
+                    .otherwise(pl.col("OUTRO_SIN"))
+                    .alias("OUTRO_SIN")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("PUERPERA") == 2))
+                    .then(0)
+                    .otherwise(pl.col("PUERPERA"))
+                    .alias("PUERPERA")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("DOR_ABD") == 2))
+                    .then(0)
+                    .otherwise(pl.col("DOR_ABD"))
+                    .alias("DOR_ABD")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("FADIGA") == 2))
+                    .then(0)
+                    .otherwise(pl.col("FADIGA"))
+                    .alias("FADIGA")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("PERD_OLFT") == 2))
+                    .then(0)
+                    .otherwise(pl.col("PERD_OLFT"))
+                    .alias("PERD_OLFT")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("PERD_PALA") == 2))
+                    .then(0)
+                    .otherwise(pl.col("PERD_PALA"))
+                    .alias("PERD_PALA")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.sum(
+                        [
+                            "NOSOCOMIAL",
+                            "FEBRE",
+                            "TOSSE",
+                            "GARGANTA",
+                            "DISPNEIA",
+                            "DESC_RESP",
+                            "SATURACAO",
+                            "DIARREIA",
+                            "VOMITO",
+                            "OUTRO_SIN",
+                            "PUERPERA",
+                            "DOR_ABD",
+                            "FADIGA",
+                            "PERD_OLFT",
+                            "PERD_PALA",
+                        ]
+                    ).alias("SINTOMAS_FACTORS")
+                ]
+            )
+        )
+        data["SINTOMAS_FACTORS"] = data_pl["SINTOMAS_FACTORS"].to_numpy()
+        data = data.drop(
+            [
+                "NOSOCOMIAL",
+                "FEBRE",
+                "TOSSE",
+                "GARGANTA",
+                "DISPNEIA",
+                "DESC_RESP",
+                "SATURACAO",
+                "DIARREIA",
+                "VOMITO",
+                "OUTRO_SIN",
+                "PUERPERA",
+                "DOR_ABD",
+                "FADIGA",
+                "PERD_OLFT",
+                "PERD_PALA",
+            ],
+            axis=1,
+        )
+        return data
+
+    def _create_estado_municipio_lat_long_correct(self, data):
+        municipios = pl.read_csv("data/municipios.csv")
+        estados = pl.read_csv("data/estados.csv")
+
+        # cleaning municipios names
+        def to_capitalize(x):
+            nome = pl.Series([i.upper() for i in x])
+            return nome
+
+        def remove_accents(x):
+            nome = pl.Series([unidecode(i) for i in x])
+            return nome
+
+        def cut_on_6_digits(x):
+            digits = pl.Series([str(i)[:6] for i in x])
+            digits = pl.Series([int(i) for i in digits])
+            return digits
+
+        municipios_clean = (
+            municipios.with_columns([pl.col("nome_m").map(to_capitalize)])
+            .with_columns([pl.col("nome_m").map(remove_accents)])
+            .with_columns([pl.col("codigo_ibge").map(cut_on_6_digits)])
+        )
+        municipios_clean_pd = municipios_clean.to_pandas()
+        print(data.shape)
+        data = data.merge(
+            right=municipios_clean_pd,
+            how="left",
+            left_on=["ID_MUNICIP", "CO_MUN_NOT"],
+            right_on=["nome_m", "codigo_ibge"],
+            suffixes=("_left", "_right"),
+        )
+        data = data.merge(
+            right=estados.to_pandas(),
+            how="left",
+            left_on="SG_UF_NOT",
+            right_on="uf",
+            suffixes=("_left", "_right"),
+        )
+        print(data.shape)
+        data = data.drop(
+            [
+                "nome_m",
+                "uf",
+                "codigo_ibge",
+                "codigo_uf",
+                "siafi_id",
+                "ddd",
+                "fuso_horario",
+            ],
+            axis=1,
+        )
+        return data
+
+    def _create_estado_municipio_lat_long_wrong(self, data):
+        municipios = pl.read_csv("data/municipios.csv")
+        estados = pl.read_csv("data/estados.csv")
+
+        # cleaning municipios names
+        def to_capitalize(x):
+            nome = pl.Series([i.upper() for i in x])
+            return nome
+
+        def remove_accents(x):
+            nome = pl.Series([unidecode(i) for i in x])
+            return nome
+
+        def cut_on_6_digits(x):
+            digits = pl.Series([str(i)[:6] for i in x])
+            digits = pl.Series([int(i) for i in digits])
+            return digits
+
+        municipios_clean = municipios.with_columns(
+            [pl.col("nome_m").map(to_capitalize)]
+        ).with_columns([pl.col("nome_m").map(remove_accents)])
+        municipios_clean_pd = municipios_clean.to_pandas()
+        print(data.shape)
+        data = data.merge(
+            right=municipios_clean_pd,
+            how="left",
+            left_on="ID_MUNICIP",
+            right_on="nome_m",
+            suffixes=("_left", "_right"),
+        )
+        data = data.merge(
+            right=estados.to_pandas(),
+            how="left",
+            left_on="SG_UF_NOT",
+            right_on="uf",
+            suffixes=("_left", "_right"),
+        )
+        print(data.shape)
+        data = data.drop(
+            [
+                "nome_m",
+                "uf",
+                "codigo_ibge",
+                "codigo_uf",
+                "siafi_id",
+                "ddd",
+                "fuso_horario",
+            ],
+            axis=1,
+        )
+        return data
+
+    def _oversampling_data(self, data):
+        # smote_enn = SMOTEENN(random_state=0)
+        # X_resampled, y_resampled = smote_enn.fit_resample(X, y)
+
+        # smote_tomek = SMOTETomek(random_state=0)
+        # X_resampled, y_resampled = smote_tomek.fit_resample(X, y)
+
+        # pipeline = imb_pipeline(steps=steps)
+        # X, y = pipeline.fit_resample(
+        #     data.drop(["CLASSI_FIN"], axis=1), data["CLASSI_FIN"]
+        # )
+        # data = pd.concat([X, y], axis=1)
+        return data
+
     def adjust_OBES_IMC(self):
         # remove comman from OBES_IMC column
         self.train_data = self._handle_obes_imc(self.train_data)
@@ -130,32 +558,50 @@ class Pipes:
         self.train_data = self._handle_tomo_res(self.train_data)
         self.test_data = self._handle_tomo_res(self.test_data)
 
+    def create_risck_variable(self):
+        self.train_data = self._create_a_risk_factor_variable(self.train_data)
+        self.test_data = self._create_a_risk_factor_variable(self.test_data)
+
+    def create_sintomas_factors(self):
+        self.train_data = self._create_sintoma_factor_variable(self.train_data)
+        self.test_data = self._create_sintoma_factor_variable(self.test_data)
+
+    def create_lat_long_others(self):
+        # self.train_data = self._create_estado_municipio_lat_long(self.train_data)
+        self.train_data = self._create_estado_municipio_lat_long_correct(
+            self.train_data
+        )
+        self.test_data = self._create_estado_municipio_lat_long_correct(self.test_data)
+
+    def oversampling_data(self):
+        self.train_data = self._oversampling_data(self.train_data)
+
     def _create_preprocessor_best_score(self):
         # categorical preprocessor
         categorical_preprocessor = Pipeline(
             steps=[
                 ("imputer", SimpleImputer(strategy="most_frequent")),
-                # (
-                #     "encoder",
-                #     OrdinalEncoder(
-                #         handle_unknown="use_encoded_value", unknown_value=-1
-                #     ),
-                # ),
                 (
-                    "one_hot_encoder",
-                    OneHotEncoder(
-                        handle_unknown="ignore",
-                        sparse=False,
-                        drop="if_binary",
+                    "encoder",
+                    OrdinalEncoder(
+                        handle_unknown="use_encoded_value", unknown_value=-1
                     ),
                 ),
+                # (
+                #     "one_hot_encoder",
+                #     OneHotEncoder(
+                #         handle_unknown="ignore",
+                #         sparse=False,
+                #         drop="if_binary",
+                #     ),
+                # ),
             ]
         )
 
         # numerical preprocessor
         numerical_preprocessor = Pipeline(
             steps=[
-                ("imputer", SimpleImputer(strategy="median")),
+                ("imputer", SimpleImputer(strategy="most_frequent")),
                 # (
                 #     "winsorizer",
                 #     Winsorizer(
@@ -169,14 +615,13 @@ class Pipes:
         )
 
         # high cardinality preprocessor
-        _ = Pipeline(
+        high_cardinality = Pipeline(
             steps=[
                 ("imputer", SimpleImputer(strategy="most_frequent")),
                 (
                     "rare_label_encoder",
                     RareLabelEncoder(
-                        tol=0.05,
-                        n_categories=500,
+                        n_categories=100,
                         ignore_format=True,
                     ),
                 ),
@@ -230,7 +675,7 @@ class Pipes:
                 ),
                 # (
                 #     "high_cardinality",
-                #     high_cardinality_preprocessor,
+                #     high_cardinality,
                 #     self.params["high_cardinality_features"],
                 # ),
                 (
@@ -298,11 +743,25 @@ class Pipes:
             reg_lambda=1.5,
         )
 
+        clf_7 = RandomForestClassifier(
+            random_state=42,
+            class_weight={0: 2, 1: 2, 2: 2, 3: 1, 4: 1},
+            max_depth=100,
+            n_estimators=2000,
+            max_features=0.5,
+            min_samples_leaf=1,
+            min_samples_split=2,
+            criterion="entropy",
+        )
+
         clf = VotingClassifier(
             estimators=[
                 ("HistGradientBoostingClassifier", clf_1),
                 ("LGBMClassifier", clf_2),
-                # ("ExtraTree", clf_6),
+                # ("ExtraTree", clf_3),
+                # ("LogistiRegression", clf_4),
+                # ("XGBoost", clf_5),
+                # ("RandomForest", clf_7),
             ],
             voting="hard",
         )
@@ -313,16 +772,11 @@ class Pipes:
     def create_pipeline(self):
         preprocessor = self._create_preprocessor_best_score()
         clf = self._create_estimator_best_score()
-        pipe = Pipeline(
+        pipe = imb_pipeline(
             steps=[
                 ("preprocessor", preprocessor),
-                # (
-                #     "SMOTE",
-                #     ADASYN(
-                #         random_state=42,
-                #         sampling_strategy="not majority",
-                #     ),
-                # ),
+                ("smoteenn", SMOTEENN(random_state=0)),
+                ("smotetomek", SMOTETomek(random_state=0)),
                 ("classifier", clf),
             ]
         )
@@ -331,7 +785,7 @@ class Pipes:
     def _create_train_test_split(self):
         columns_to_drop = [
             "ID_REGIONA",
-            "ID_MUNICIP",
+            # "ID_MUNICIP",
             "OUTRO_DES",
             "MORB_DESC",
             "OUT_AMOST",
@@ -347,6 +801,7 @@ class Pipes:
             "MAE_VAC",
             # "TP_ANTIVIR",
             # "CO_MUN_NOT",
+            # "CO_REGIONA",
             "SURTO_SG",
             "RAIOX_OUT",
             "FNT_IN_COV",
@@ -413,7 +868,7 @@ class Pipes:
     def create_submission_file(self, pipe, file_name: str):
         columns_to_drop_test = [
             "ID_REGIONA",
-            "ID_MUNICIP",
+            # "ID_MUNICIP",
             "OUTRO_DES",
             "MORB_DESC",
             "OUT_AMOST",
@@ -429,6 +884,7 @@ class Pipes:
             "MAE_VAC",
             # "TP_ANTIVIR",
             # "CO_MUN_NOT",
+            # "CO_REGIONA",
             "SURTO_SG",
             "RAIOX_OUT",
             "FNT_IN_COV",
@@ -437,6 +893,8 @@ class Pipes:
         x_test_id = self.test_data["ID"]
         x_test = self.test_data.drop(columns_to_drop_test, axis=1)
         y_pred = pipe.predict(x_test)
+
+        print(x_test.shape)
 
         submission = pd.DataFrame({"ID": x_test_id, "CLASSI_FIN": y_pred})
         submission.to_csv(file_name, index=False)
