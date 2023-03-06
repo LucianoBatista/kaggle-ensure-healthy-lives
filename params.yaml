@@ -94,31 +94,31 @@ categorical_features:
   - SG_UF
   - CS_ZONA
   # - SURTO_SG
-  # - NOSOCOMIAL
+  - NOSOCOMIAL
   - AVE_SUINO
-  # - FEBRE
-  # - TOSSE
-  # - GARGANTA
-  # - DISPNEIA
-  # - DESC_RESP
-  # - SATURACAO
-  # - DIARREIA
-  # - VOMITO
-  # - OUTRO_SIN
+  - FEBRE
+  - TOSSE
+  - GARGANTA
+  - DISPNEIA
+  - DESC_RESP
+  - SATURACAO
+  - DIARREIA
+  - VOMITO
+  - OUTRO_SIN
   # - OUTRO_DES
-  # - PUERPERA
+  - PUERPERA
   - FATOR_RISC
-  # - CARDIOPATI
-  # - HEMATOLOGI
-  # - SIND_DOWN
-  # - HEPATICA
-  # - ASMA
-  # - DIABETES
-  # - NEUROLOGIC
-  # - PNEUMOPATI
-  # - IMUNODEPRE
-  # - RENAL
-  # - OBESIDADE
+  - CARDIOPATI
+  - HEMATOLOGI
+  - SIND_DOWN
+  - HEPATICA
+  - ASMA
+  - DIABETES
+  - NEUROLOGIC
+  - PNEUMOPATI
+  - IMUNODEPRE
+  - RENAL
+  - OBESIDADE
   - OUT_MORBI
   # - MORB_DESC
   - VACINA
@@ -138,10 +138,10 @@ categorical_features:
   # - PAC_COCBO
   # - PAC_DSCBO
   # - OUT_ANIM
-  # - DOR_ABD
-  # - FADIGA
-  # - PERD_OLFT
-  # - PERD_PALA
+  - DOR_ABD
+  - FADIGA
+  - PERD_OLFT
+  - PERD_PALA
   - TOMO_RES
   # - TOMO_OUT
   - VACINA_COV
@@ -149,8 +149,8 @@ categorical_features:
   - DOSE_2_COV
   # - FNT_IN_COV
   - TP_IDADE
-  - capital
-  - regiao
+  # - capital
+  # - regiao
 
 categorical_features_order_matters:
 
@@ -159,12 +159,12 @@ numerical_features:
   - SEM_NOT
   - SEM_PRI
   - NU_IDADE_N
-  - RISCK_FACTORS
-  - SINTOMAS_FACTORS
-  - latitude_m
-  - longitude_m
-  - latitude_e
-  - latitude_e
+  # - RISCK_FACTORS
+  # - SINTOMAS_FACTORS
+  # - latitude_m
+  # - longitude_m
+  # - latitude_e
+  # - latitude_e
   
 
 target_column:
