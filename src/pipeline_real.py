@@ -88,21 +88,21 @@ class Pipes:
 
         return data
 
-    # def _handle_idade(self, data: pd.DataFrame):
-    #     data_pl = pl.from_pandas(data)
-    #     data = data_pl.with_columns(
-    #         [
-    #             pl.when(pl.col("TP_IDADE").is_in([1, 2]))
-    #             .then(0)
-    #             .when(pl.col("TP_IDADE") == 3)
-    #             .then(pl.col("NU_IDADE_N"))
-    #             .otherwise(pl.col("NU_IDADE_N"))
-    #             .alias("NU_IDADE_N")
-    #         ]
-    #     )
-    #     data = data.to_pandas()
+    def _handle_idade(self, data: pd.DataFrame):
+        data_pl = pl.from_pandas(data)
+        data = data_pl.with_columns(
+            [
+                pl.when(pl.col("TP_IDADE").is_in([1, 2]))
+                .then(0)
+                .when(pl.col("TP_IDADE") == 3)
+                .then(pl.col("NU_IDADE_N"))
+                .otherwise(pl.col("NU_IDADE_N"))
+                .alias("NU_IDADE_N")
+            ]
+        )
+        data = data.to_pandas()
 
-    #     return data
+        return data
 
     # def _handle_antiviral(self, data: pd.DataFrame):
     #     data_pl = pl.from_pandas(data)
@@ -449,7 +449,7 @@ class Pipes:
         municipios_clean = (
             municipios.with_columns([pl.col("nome_m").map(to_capitalize)])
             .with_columns([pl.col("nome_m").map(remove_accents)])
-            .with_columns([pl.col("codigo_ibge").map(cut_on_6_digits)])
+            .with_columns([pl.col("Código IBGE").map(cut_on_6_digits)])
         )
         municipios_clean_pd = municipios_clean.to_pandas()
         print(data.shape)
@@ -457,7 +457,7 @@ class Pipes:
             right=municipios_clean_pd,
             how="left",
             left_on=["ID_MUNICIP", "CO_MUN_NOT"],
-            right_on=["nome_m", "codigo_ibge"],
+            right_on=["nome_m", "Código IBGE"],
             suffixes=("_left", "_right"),
         )
         data = data.merge(
@@ -472,11 +472,12 @@ class Pipes:
             [
                 "nome_m",
                 "uf",
-                "codigo_ibge",
+                "Código IBGE",
                 "codigo_uf",
                 "siafi_id",
                 "ddd",
                 "fuso_horario",
+                "Densidade",
                 # "latitude_e",
                 # "longitude_e",
             ],
@@ -558,9 +559,9 @@ class Pipes:
         self.train_data = self._handle_obes_imc(self.train_data)
         self.test_data = self._handle_obes_imc(self.test_data)
 
-    # def adjust_idade(self):
-    #     self.train_data = self._handle_idade(self.train_data)
-    #     self.test_data = self._handle_idade(self.test_data)
+    def adjust_idade(self):
+        self.train_data = self._handle_idade(self.train_data)
+        self.test_data = self._handle_idade(self.test_data)
 
     # def adjust_antiviral(self):
     #     self.train_data = self._handle_antiviral(self.train_data)
@@ -629,20 +630,20 @@ class Pipes:
         )
 
         # high cardinality preprocessor
-        high_cardinality = Pipeline(
+        _ = Pipeline(
             steps=[
                 ("imputer", SimpleImputer(strategy="most_frequent")),
-                (
-                    "rare_label_encoder",
-                    RareLabelEncoder(
-                        n_categories=100,
-                        ignore_format=True,
-                    ),
-                ),
+                # (
+                #     "rare_label_encoder",
+                #     RareLabelEncoder(
+                #         n_categories=100,
+                #         ignore_format=True,
+                #     ),
+                # ),
                 (
                     "encoder",
                     OrdinalEncoder(
-                        handle_unknown="use_encoded_value", unknown_value=100
+                        handle_unknown="use_encoded_value", unknown_value=-1
                     ),
                 ),
             ]
@@ -796,7 +797,7 @@ class Pipes:
                 # ),
                 # ("smotetomek", SMOTETomek(random_state=0)),
                 # ("selector", SelectKBest(score_func=chi2, k=40)),
-                # ("smote", SMOTE(random_state=0)),
+                # ("smote", SMOTE(random_state=0, sampling_strategy="minority")),
                 ("classifier", clf),
             ]
         )
@@ -819,7 +820,8 @@ class Pipes:
             "OBES_IMC",
             "M_AMAMENTA",
             "MAE_VAC",
-            "TP_ANTIVIR",
+            # "COD_IDADE",
+            # "TP_ANTIVIR",
             # "CO_MUN_NOT",
             # "CO_REGIONA",
             # "SURTO_SG",
@@ -902,7 +904,8 @@ class Pipes:
             "OBES_IMC",
             "M_AMAMENTA",
             "MAE_VAC",
-            "TP_ANTIVIR",
+            # "COD_IDADE",
+            # "TP_ANTIVIR",
             # "CO_MUN_NOT",
             # "CO_REGIONA",
             # "SURTO_SG",

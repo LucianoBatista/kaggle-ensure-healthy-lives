@@ -82,12 +82,13 @@ high_cardinality_features:
 
 categorical_features:
   - CO_MUN_NOT
+  - COD_IDADE
+  - RAIOX_OUT
   - CO_REGIONA
   - SG_UF_NOT
   # - ID_REGIONA
   # - ID_MUNICIP
   - CS_SEXO
-  - COD_IDADE
   - CS_GESTANT
   - CS_RACA
   - CS_ESCOL_N
@@ -125,12 +126,11 @@ categorical_features:
   # - MAE_VAC
   # - M_AMAMENTA
   - ANTIVIRAL
-  # - TP_ANTIVIR
+  - TP_ANTIVIR
   - HOSPITAL
   - UTI
   - SUPORT_VEN
   - RAIOX_RES
-  - RAIOX_OUT
   - AMOSTRA
   - TP_AMOSTRA
   # - OUT_AMOST
@@ -163,17 +163,17 @@ numerical_features:
   # - SINTOMAS_FACTORS
   - latitude_m
   - longitude_m
+  - pib
+  # - Densidade
   # - latitude_e
   # - longitude_e
-  
 
 target_column:
   - CLASSI_FIN
-
 # map_variables:
 #   - CO_MUN_NOT: municipio_code_ibge
 #   - CO_REGIONA: regionais_saude_code_ibge
-#   - SG_UF_NOT: 
+#   - SG_UF_NOT:
 #   # - ID_REGIONA
 #   # - ID_MUNICIP
 #   - CS_SEXO
@@ -245,18 +245,13 @@ target_column:
 #   - NU_IDADE_N
 #   - CLASSI_FIN
 
-
 # dados_paciente:
-
 
 # dados_residencia:
 
-
 # dados_clinicos:
-
 
 # dados_atendimentos:
 
 # dados_laboratoriais:
-
 
