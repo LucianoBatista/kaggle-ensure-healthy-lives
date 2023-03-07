@@ -85,7 +85,7 @@ categorical_features:
   - CO_REGIONA
   - SG_UF_NOT
   # - ID_REGIONA
-  - ID_MUNICIP
+  # - ID_MUNICIP
   - CS_SEXO
   - COD_IDADE
   - CS_GESTANT
@@ -93,7 +93,7 @@ categorical_features:
   - CS_ESCOL_N
   - SG_UF
   - CS_ZONA
-  # - SURTO_SG
+  - SURTO_SG
   - NOSOCOMIAL
   - AVE_SUINO
   - FEBRE
@@ -125,12 +125,12 @@ categorical_features:
   # - MAE_VAC
   # - M_AMAMENTA
   - ANTIVIRAL
-  - TP_ANTIVIR
+  # - TP_ANTIVIR
   - HOSPITAL
   - UTI
   - SUPORT_VEN
   - RAIOX_RES
-  # - RAIOX_OUT
+  - RAIOX_OUT
   - AMOSTRA
   - TP_AMOSTRA
   # - OUT_AMOST
@@ -147,24 +147,24 @@ categorical_features:
   - VACINA_COV
   - DOSE_1_COV
   - DOSE_2_COV
-  # - FNT_IN_COV
-  - TP_IDADE
+  - FNT_IN_COV
+  # - TP_IDADE
   # - capital
-  # - regiao
+  - regiao
 
 categorical_features_order_matters:
 
 numerical_features:
-  - OBES_IMC
+  # - OBES_IMC
   - SEM_NOT
   - SEM_PRI
   - NU_IDADE_N
   # - RISCK_FACTORS
   # - SINTOMAS_FACTORS
-  # - latitude_m
-  # - longitude_m
+  - latitude_m
+  - longitude_m
   # - latitude_e
-  # - latitude_e
+  # - longitude_e
   
 
 target_column:

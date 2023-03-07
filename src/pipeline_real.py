@@ -127,306 +127,306 @@ class Pipes:
 
     #     return data
 
-    # def _create_a_risk_factor_variable(self, data: pd.DataFrame):
-    #     data_pl = pl.from_pandas(data)
-    #     data_pl = (
-    #         data_pl.with_columns(
-    #             [
-    #                 pl.when((pl.col("CARDIOPATI") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("CARDIOPATI"))
-    #                 .alias("CARDIOPATI")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("HEMATOLOGI") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("HEMATOLOGI"))
-    #                 .alias("HEMATOLOGI")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("SIND_DOWN") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("SIND_DOWN"))
-    #                 .alias("SIND_DOWN")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("HEPATICA") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("HEPATICA"))
-    #                 .alias("HEPATICA")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("ASMA") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("ASMA"))
-    #                 .alias("ASMA")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("DIABETES") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("DIABETES"))
-    #                 .alias("DIABETES")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("NEUROLOGIC") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("NEUROLOGIC"))
-    #                 .alias("NEUROLOGIC")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("PNEUMOPATI") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("PNEUMOPATI"))
-    #                 .alias("PNEUMOPATI")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("IMUNODEPRE") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("IMUNODEPRE"))
-    #                 .alias("IMUNODEPRE")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("RENAL") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("RENAL"))
-    #                 .alias("RENAL")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("OBESIDADE") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("OBESIDADE"))
-    #                 .alias("OBESIDADE")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.sum(
-    #                     [
-    #                         "CARDIOPATI",
-    #                         "HEMATOLOGI",
-    #                         "SIND_DOWN",
-    #                         "HEPATICA",
-    #                         "ASMA",
-    #                         "DIABETES",
-    #                         "NEUROLOGIC",
-    #                         "PNEUMOPATI",
-    #                         "IMUNODEPRE",
-    #                         "RENAL",
-    #                         "OBESIDADE",
-    #                     ]
-    #                 ).alias("RISCK_FACTORS")
-    #             ]
-    #         )
-    #     )
-    #     data["RISCK_FACTORS"] = data_pl["RISCK_FACTORS"].to_numpy()
-    #     data = data.drop(
-    #         [
-    #             "CARDIOPATI",
-    #             "HEMATOLOGI",
-    #             "SIND_DOWN",
-    #             "HEPATICA",
-    #             "ASMA",
-    #             "DIABETES",
-    #             "NEUROLOGIC",
-    #             "PNEUMOPATI",
-    #             "IMUNODEPRE",
-    #             "RENAL",
-    #             "OBESIDADE",
-    #         ],
-    #         axis=1,
-    #     )
+    def _create_a_risk_factor_variable(self, data: pd.DataFrame):
+        data_pl = pl.from_pandas(data)
+        data_pl = (
+            data_pl.with_columns(
+                [
+                    pl.when((pl.col("CARDIOPATI") == 2))
+                    .then(0)
+                    .otherwise(pl.col("CARDIOPATI"))
+                    .alias("CARDIOPATI")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("HEMATOLOGI") == 2))
+                    .then(0)
+                    .otherwise(pl.col("HEMATOLOGI"))
+                    .alias("HEMATOLOGI")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("SIND_DOWN") == 2))
+                    .then(0)
+                    .otherwise(pl.col("SIND_DOWN"))
+                    .alias("SIND_DOWN")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("HEPATICA") == 2))
+                    .then(0)
+                    .otherwise(pl.col("HEPATICA"))
+                    .alias("HEPATICA")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("ASMA") == 2))
+                    .then(0)
+                    .otherwise(pl.col("ASMA"))
+                    .alias("ASMA")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("DIABETES") == 2))
+                    .then(0)
+                    .otherwise(pl.col("DIABETES"))
+                    .alias("DIABETES")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("NEUROLOGIC") == 2))
+                    .then(0)
+                    .otherwise(pl.col("NEUROLOGIC"))
+                    .alias("NEUROLOGIC")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("PNEUMOPATI") == 2))
+                    .then(0)
+                    .otherwise(pl.col("PNEUMOPATI"))
+                    .alias("PNEUMOPATI")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("IMUNODEPRE") == 2))
+                    .then(0)
+                    .otherwise(pl.col("IMUNODEPRE"))
+                    .alias("IMUNODEPRE")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("RENAL") == 2))
+                    .then(0)
+                    .otherwise(pl.col("RENAL"))
+                    .alias("RENAL")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("OBESIDADE") == 2))
+                    .then(0)
+                    .otherwise(pl.col("OBESIDADE"))
+                    .alias("OBESIDADE")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.sum(
+                        [
+                            "CARDIOPATI",
+                            "HEMATOLOGI",
+                            "SIND_DOWN",
+                            "HEPATICA",
+                            "ASMA",
+                            "DIABETES",
+                            "NEUROLOGIC",
+                            "PNEUMOPATI",
+                            "IMUNODEPRE",
+                            "RENAL",
+                            "OBESIDADE",
+                        ]
+                    ).alias("RISCK_FACTORS")
+                ]
+            )
+        )
+        data["RISCK_FACTORS"] = data_pl["RISCK_FACTORS"].to_numpy()
+        # data = data.drop(
+        #     [
+        #         "CARDIOPATI",
+        #         "HEMATOLOGI",
+        #         "SIND_DOWN",
+        #         "HEPATICA",
+        #         "ASMA",
+        #         "DIABETES",
+        #         "NEUROLOGIC",
+        #         "PNEUMOPATI",
+        #         "IMUNODEPRE",
+        #         "RENAL",
+        #         "OBESIDADE",
+        #     ],
+        #     axis=1,
+        # )
 
-    #     return data
+        return data
 
-    # def _create_sintoma_factor_variable(self, data: pd.DataFrame):
-    #     data_pl = pl.from_pandas(data)
-    #     data_pl = (
-    #         data_pl.with_columns(
-    #             [
-    #                 pl.when((pl.col("NOSOCOMIAL") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("NOSOCOMIAL"))
-    #                 .alias("NOSOCOMIAL")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("FEBRE") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("FEBRE"))
-    #                 .alias("FEBRE")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("TOSSE") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("TOSSE"))
-    #                 .alias("TOSSE")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("GARGANTA") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("GARGANTA"))
-    #                 .alias("GARGANTA")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("DISPNEIA") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("DISPNEIA"))
-    #                 .alias("DISPNEIA")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("DESC_RESP") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("DESC_RESP"))
-    #                 .alias("DESC_RESP")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("SATURACAO") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("SATURACAO"))
-    #                 .alias("SATURACAO")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("DIARREIA") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("DIARREIA"))
-    #                 .alias("DIARREIA")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("VOMITO") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("VOMITO"))
-    #                 .alias("VOMITO")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("OUTRO_SIN") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("OUTRO_SIN"))
-    #                 .alias("OUTRO_SIN")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("PUERPERA") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("PUERPERA"))
-    #                 .alias("PUERPERA")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("DOR_ABD") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("DOR_ABD"))
-    #                 .alias("DOR_ABD")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("FADIGA") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("FADIGA"))
-    #                 .alias("FADIGA")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("PERD_OLFT") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("PERD_OLFT"))
-    #                 .alias("PERD_OLFT")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.when((pl.col("PERD_PALA") == 2))
-    #                 .then(0)
-    #                 .otherwise(pl.col("PERD_PALA"))
-    #                 .alias("PERD_PALA")
-    #             ]
-    #         )
-    #         .with_columns(
-    #             [
-    #                 pl.sum(
-    #                     [
-    #                         "NOSOCOMIAL",
-    #                         "FEBRE",
-    #                         "TOSSE",
-    #                         "GARGANTA",
-    #                         "DISPNEIA",
-    #                         "DESC_RESP",
-    #                         "SATURACAO",
-    #                         "DIARREIA",
-    #                         "VOMITO",
-    #                         "OUTRO_SIN",
-    #                         "PUERPERA",
-    #                         "DOR_ABD",
-    #                         "FADIGA",
-    #                         "PERD_OLFT",
-    #                         "PERD_PALA",
-    #                     ]
-    #                 ).alias("SINTOMAS_FACTORS")
-    #             ]
-    #         )
-    #     )
-    #     data["SINTOMAS_FACTORS"] = data_pl["SINTOMAS_FACTORS"].to_numpy()
-    #     data = data.drop(
-    #         [
-    #             "NOSOCOMIAL",
-    #             "FEBRE",
-    #             "TOSSE",
-    #             "GARGANTA",
-    #             "DISPNEIA",
-    #             "DESC_RESP",
-    #             "SATURACAO",
-    #             "DIARREIA",
-    #             "VOMITO",
-    #             "OUTRO_SIN",
-    #             "PUERPERA",
-    #             "DOR_ABD",
-    #             "FADIGA",
-    #             "PERD_OLFT",
-    #             "PERD_PALA",
-    #         ],
-    #         axis=1,
-    #     )
-    #     return data
+    def _create_sintoma_factor_variable(self, data: pd.DataFrame):
+        data_pl = pl.from_pandas(data)
+        data_pl = (
+            data_pl.with_columns(
+                [
+                    pl.when((pl.col("NOSOCOMIAL") == 2))
+                    .then(0)
+                    .otherwise(pl.col("NOSOCOMIAL"))
+                    .alias("NOSOCOMIAL")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("FEBRE") == 2))
+                    .then(0)
+                    .otherwise(pl.col("FEBRE"))
+                    .alias("FEBRE")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("TOSSE") == 2))
+                    .then(0)
+                    .otherwise(pl.col("TOSSE"))
+                    .alias("TOSSE")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("GARGANTA") == 2))
+                    .then(0)
+                    .otherwise(pl.col("GARGANTA"))
+                    .alias("GARGANTA")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("DISPNEIA") == 2))
+                    .then(0)
+                    .otherwise(pl.col("DISPNEIA"))
+                    .alias("DISPNEIA")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("DESC_RESP") == 2))
+                    .then(0)
+                    .otherwise(pl.col("DESC_RESP"))
+                    .alias("DESC_RESP")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("SATURACAO") == 2))
+                    .then(0)
+                    .otherwise(pl.col("SATURACAO"))
+                    .alias("SATURACAO")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("DIARREIA") == 2))
+                    .then(0)
+                    .otherwise(pl.col("DIARREIA"))
+                    .alias("DIARREIA")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("VOMITO") == 2))
+                    .then(0)
+                    .otherwise(pl.col("VOMITO"))
+                    .alias("VOMITO")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("OUTRO_SIN") == 2))
+                    .then(0)
+                    .otherwise(pl.col("OUTRO_SIN"))
+                    .alias("OUTRO_SIN")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("PUERPERA") == 2))
+                    .then(0)
+                    .otherwise(pl.col("PUERPERA"))
+                    .alias("PUERPERA")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("DOR_ABD") == 2))
+                    .then(0)
+                    .otherwise(pl.col("DOR_ABD"))
+                    .alias("DOR_ABD")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("FADIGA") == 2))
+                    .then(0)
+                    .otherwise(pl.col("FADIGA"))
+                    .alias("FADIGA")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("PERD_OLFT") == 2))
+                    .then(0)
+                    .otherwise(pl.col("PERD_OLFT"))
+                    .alias("PERD_OLFT")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.when((pl.col("PERD_PALA") == 2))
+                    .then(0)
+                    .otherwise(pl.col("PERD_PALA"))
+                    .alias("PERD_PALA")
+                ]
+            )
+            .with_columns(
+                [
+                    pl.sum(
+                        [
+                            "NOSOCOMIAL",
+                            "FEBRE",
+                            "TOSSE",
+                            "GARGANTA",
+                            "DISPNEIA",
+                            "DESC_RESP",
+                            "SATURACAO",
+                            "DIARREIA",
+                            "VOMITO",
+                            "OUTRO_SIN",
+                            "PUERPERA",
+                            "DOR_ABD",
+                            "FADIGA",
+                            "PERD_OLFT",
+                            "PERD_PALA",
+                        ]
+                    ).alias("SINTOMAS_FACTORS")
+                ]
+            )
+        )
+        data["SINTOMAS_FACTORS"] = data_pl["SINTOMAS_FACTORS"].to_numpy()
+        data = data.drop(
+            [
+                "NOSOCOMIAL",
+                "FEBRE",
+                "TOSSE",
+                "GARGANTA",
+                "DISPNEIA",
+                "DESC_RESP",
+                "SATURACAO",
+                "DIARREIA",
+                "VOMITO",
+                "OUTRO_SIN",
+                "PUERPERA",
+                "DOR_ABD",
+                "FADIGA",
+                "PERD_OLFT",
+                "PERD_PALA",
+            ],
+            axis=1,
+        )
+        return data
 
     def _create_estado_municipio_lat_long_correct(self, data):
         municipios = pl.read_csv("data/municipios.csv")
@@ -477,6 +477,8 @@ class Pipes:
                 "siafi_id",
                 "ddd",
                 "fuso_horario",
+                # "latitude_e",
+                # "longitude_e",
             ],
             axis=1,
         )
@@ -529,6 +531,9 @@ class Pipes:
                 "siafi_id",
                 "ddd",
                 "fuso_horario",
+                "latitude_e",
+                "longitude_e",
+                "capital",
             ],
             axis=1,
         )
@@ -565,9 +570,9 @@ class Pipes:
     #     self.train_data = self._handle_tomo_res(self.train_data)
     #     self.test_data = self._handle_tomo_res(self.test_data)
 
-    # def create_risck_variable(self):
-    #     self.train_data = self._create_a_risk_factor_variable(self.train_data)
-    #     self.test_data = self._create_a_risk_factor_variable(self.test_data)
+    def create_risck_variable(self):
+        self.train_data = self._create_a_risk_factor_variable(self.train_data)
+        self.test_data = self._create_a_risk_factor_variable(self.test_data)
 
     # def create_sintomas_factors(self):
     #     self.train_data = self._create_sintoma_factor_variable(self.train_data)
@@ -591,7 +596,7 @@ class Pipes:
                 (
                     "encoder",
                     OrdinalEncoder(
-                        handle_unknown="use_encoded_value", unknown_value=100000
+                        handle_unknown="use_encoded_value", unknown_value=-1
                     ),
                 ),
                 # (
@@ -617,6 +622,7 @@ class Pipes:
                 #         tail="both",
                 #     ),
                 # ),
+                # try to use this scaler latter
                 # ("scaler", StandardScaler()),
                 ("scaler", MinMaxScaler()),
             ]
@@ -769,7 +775,7 @@ class Pipes:
                 # ("ExtraTree", clf_3),
                 # ("LogistiRegression", clf_4),
                 # ("XGBoost", clf_5),
-                ("RandomForest", clf_7),
+                # ("RandomForest", clf_7),
             ],
             voting="hard",
         )
@@ -780,7 +786,7 @@ class Pipes:
     def create_pipeline(self):
         preprocessor = self._create_preprocessor_best_score()
         clf = self._create_estimator_best_score()
-        pipe = imb_pipeline(
+        pipe = Pipeline(
             steps=[
                 ("preprocessor", preprocessor),
                 # ("pca", PCA(n_components=40, random_state=42)),
@@ -790,7 +796,7 @@ class Pipes:
                 # ),
                 # ("smotetomek", SMOTETomek(random_state=0)),
                 # ("selector", SelectKBest(score_func=chi2, k=40)),
-                ("smote", SMOTE(random_state=0)),
+                # ("smote", SMOTE(random_state=0)),
                 ("classifier", clf),
             ]
         )
@@ -799,26 +805,26 @@ class Pipes:
     def _create_train_test_split(self):
         columns_to_drop = [
             "ID_REGIONA",
-            # "ID_MUNICIP",
+            "ID_MUNICIP",
             "OUTRO_DES",
             "MORB_DESC",
             "OUT_AMOST",
             "PAC_COCBO",
             "PAC_DSCBO",
             "TOMO_OUT",
-            # "TP_IDADE",
+            "TP_IDADE",
             "DELTA_UTI",
             "DOSE_REF",
             "OUT_ANIM",
-            # "OBES_IMC",
+            "OBES_IMC",
             "M_AMAMENTA",
             "MAE_VAC",
-            # "TP_ANTIVIR",
+            "TP_ANTIVIR",
             # "CO_MUN_NOT",
             # "CO_REGIONA",
-            "SURTO_SG",
-            "RAIOX_OUT",
-            "FNT_IN_COV",
+            # "SURTO_SG",
+            # "RAIOX_OUT",
+            # "FNT_IN_COV",
             "ID",
             "CLASSI_FIN",
         ]
@@ -882,26 +888,26 @@ class Pipes:
     def create_submission_file(self, pipe, file_name: str):
         columns_to_drop_test = [
             "ID_REGIONA",
-            # "ID_MUNICIP",
+            "ID_MUNICIP",
             "OUTRO_DES",
             "MORB_DESC",
             "OUT_AMOST",
             "PAC_COCBO",
             "PAC_DSCBO",
             "TOMO_OUT",
-            # "TP_IDADE",
+            "TP_IDADE",
             "DELTA_UTI",
             "DOSE_REF",
             "OUT_ANIM",
-            # "OBES_IMC",
+            "OBES_IMC",
             "M_AMAMENTA",
             "MAE_VAC",
-            # "TP_ANTIVIR",
+            "TP_ANTIVIR",
             # "CO_MUN_NOT",
             # "CO_REGIONA",
-            "SURTO_SG",
-            "RAIOX_OUT",
-            "FNT_IN_COV",
+            # "SURTO_SG",
+            # "RAIOX_OUT",
+            # "FNT_IN_COV",
             "ID",
         ]
         x_test_id = self.test_data["ID"]
