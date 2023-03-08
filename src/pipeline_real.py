@@ -719,6 +719,9 @@ class Pipes:
             max_depth=100,
             n_estimators=2000,
             num_leaves=255,
+            min_child_samples=2000,
+            colsample_bytree=0.75,
+            subsample_freq=7,
             reg_alpha=1.5,
             reg_lambda=1.5,
         )
@@ -726,9 +729,8 @@ class Pipes:
             random_state=42,
             class_weight={0: 2, 1: 2, 2: 2, 3: 1, 4: 1},
             max_depth=100,
-            max_features=0.5,
-            min_samples_leaf=1,
-            min_samples_split=2,
+            min_samples_leaf=10,
+            min_samples_split=10,
             splitter="random",
         )
         clf_4 = LogisticRegression(
@@ -773,12 +775,13 @@ class Pipes:
             estimators=[
                 ("HistGradientBoostingClassifier", clf_1),
                 ("LGBMClassifier", clf_2),
-                # ("ExtraTree", clf_3),
+                # ("ExtraTree", clf_5),
                 # ("LogistiRegression", clf_4),
                 # ("XGBoost", clf_5),
                 # ("RandomForest", clf_7),
             ],
             voting="hard",
+            # weights=[1, 2],
         )
         # rf = HistGradientBoostingClassifier()
 
