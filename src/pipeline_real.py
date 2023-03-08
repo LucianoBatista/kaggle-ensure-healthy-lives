@@ -773,15 +773,15 @@ class Pipes:
 
         clf = VotingClassifier(
             estimators=[
-                ("HistGradientBoostingClassifier", clf_1),
+                # ("HistGradientBoostingClassifier", clf_1),
+                ("XGBoost", clf_5),
                 ("LGBMClassifier", clf_2),
-                # ("ExtraTree", clf_5),
+                # ("ExtraTree", clf_3),
                 # ("LogistiRegression", clf_4),
-                # ("XGBoost", clf_5),
                 # ("RandomForest", clf_7),
             ],
             voting="hard",
-            # weights=[1, 2],
+            # weights=[1, 2, 1],
         )
         # rf = HistGradientBoostingClassifier()
 
