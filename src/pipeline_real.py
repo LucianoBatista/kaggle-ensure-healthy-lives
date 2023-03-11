@@ -5,8 +5,6 @@ import pandas as pd
 import polars as pl
 import yaml
 from catboost import CatBoostClassifier
-
-# from imblearn.pipeline import Pipeline
 from lightgbm import LGBMClassifier
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import (
@@ -19,12 +17,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
 from sklearn.model_selection import GridSearchCV, train_test_split
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import (
-    MinMaxScaler,
-    OneHotEncoder,
-    OrdinalEncoder,
-    StandardScaler,
-)
+from sklearn.preprocessing import MinMaxScaler, OrdinalEncoder
 from sklearn.tree import ExtraTreeClassifier
 from unidecode import unidecode
 from xgboost import XGBClassifier
@@ -38,6 +31,23 @@ class Params:
     categorical_features_order_matters: list
     numerical_features: list
     target_column: str
+
+
+# cleaning municipios names
+def to_capitalize(x):
+    nome = pl.Series([i.upper() for i in x])
+    return nome
+
+
+def remove_accents(x):
+    nome = pl.Series([unidecode(i) for i in x])
+    return nome
+
+
+def cut_on_6_digits(x):
+    digits = pl.Series([str(i)[:6] for i in x])
+    digits = pl.Series([int(i) for i in digits])
+    return digits
 
 
 class Pipes:
@@ -63,27 +73,12 @@ class Pipes:
         municipios = pl.read_csv("data/municipios.csv")
         estados = pl.read_csv("data/estados.csv")
 
-        # cleaning municipios names
-        def to_capitalize(x):
-            nome = pl.Series([i.upper() for i in x])
-            return nome
-
-        def remove_accents(x):
-            nome = pl.Series([unidecode(i) for i in x])
-            return nome
-
-        def cut_on_6_digits(x):
-            digits = pl.Series([str(i)[:6] for i in x])
-            digits = pl.Series([int(i) for i in digits])
-            return digits
-
         municipios_clean = (
             municipios.with_columns([pl.col("nome_m").map(to_capitalize)])
             .with_columns([pl.col("nome_m").map(remove_accents)])
             .with_columns([pl.col("Código IBGE").map(cut_on_6_digits)])
         )
         municipios_clean_pd = municipios_clean.to_pandas()
-        print(data.shape)
         data = data.merge(
             right=municipios_clean_pd,
             how="left",
@@ -98,7 +93,6 @@ class Pipes:
             right_on="uf",
             suffixes=("_left", "_right"),
         )
-        print(data.shape)
         data = data.drop(
             [
                 "nome_m",
@@ -109,8 +103,6 @@ class Pipes:
                 "ddd",
                 "fuso_horario",
                 "Densidade",
-                # "latitude_e",
-                # "longitude_e",
             ],
             axis=1,
         )
